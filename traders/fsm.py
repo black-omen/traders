@@ -65,9 +65,9 @@ class Transition(object):
         self._update = update
 
     def __str__(self):
-        return '({}, {}) -> {}'.format(str(self.current_state),
+        return '({}, {}) -> {}'.format(str(self.current_state.name),
                                        str(self.event),
-                                       str(self.next_state))
+                                       str(self.next_state.name))
 
     @property
     def event(self):
@@ -90,7 +90,6 @@ class Transition(object):
 
     def match(self, current_state, event):
         """Verifies if the transition matches the state and event"""
-
         if self.current_state == current_state and self.event == event:
             return True
 
@@ -130,6 +129,21 @@ class FiniteStateMachine(State):
 
         return tuple(events)
 
+    def __str__(self):
+        """String representation of a FSM"""
+
+        out = 'FSM: {}\n'.format(self.name)
+        out += '\n  Start state: {}\n'.format(str(self.start_state))
+        out += '\n  Transitions:\n'
+        for transition in self._transitions:
+            out += '    {}\n'.format(str(transition))
+
+        out += '\n  Events:\n'
+        for event in self.events:
+            out += '    {}\n'.format(event)
+
+        print(out)
+
     def add(self, transition):
         """Adds a transition to a FiniteStateMachine"""
 
@@ -138,17 +152,6 @@ class FiniteStateMachine(State):
                 '\'transition\' must be an instance of {}, not {}.'
                 .format(Transition, transition.__class__))
         self._transitions.append(transition)
-
-    def pretty_print(self):
-        """Pretty prints the FSM for debugging"""
-
-        out = 'FSM: {}\n'.format(self.name)
-        out += '  Start state: {}\n'.format(str(self.start_state))
-        out += '  Trantisions:\n'
-        for transition in self._transitions:
-            out += '    {}\n'.format(str(transition))
-
-        print(out)
 
     def run(self):
         """Runs the finite state machine"""
